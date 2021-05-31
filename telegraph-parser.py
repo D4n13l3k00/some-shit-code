@@ -15,9 +15,8 @@ if mode not in ["h", "ht", "t"]:
     input()
     exit()
 print("[Parser] Starting Parser...")
-if mode in ["h", "ht"]:
-    if not os.path.isdir("parsed"):
-        os.mkdir("parsed")
+if mode in ["h", "ht"] and not os.path.isdir("parsed"):
+    os.mkdir("parsed")
 while True:
     alls += 1
     l = f"{lnk}-{str(month).zfill(2)}-{str(day).zfill(2)}"
@@ -28,8 +27,8 @@ while True:
         print(f"[Parser] CAN'T CONNECT TO \"{l}\"! SKIPPING...")
         continue
     if rq.status_code == 200:
-        if mode == "h" or mode == "ht": open("parsed/" + l + ".html", "w").write(шаблон.replace("URL=---", url))
-        if mode == "t" or mode == "ht": open("parsed.txt", "a").write(url + "\n")
+        if mode in ["h", "ht"]: open("parsed/" + l + ".html", "w").write(шаблон.replace("URL=---", url))
+        if mode in ["t", "ht"]: open("parsed.txt", "a").write(url + "\n")
         if uselogging == "y": print("[Parser] Link is valid")
         valid += 1
     else:
