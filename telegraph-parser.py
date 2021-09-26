@@ -1,6 +1,7 @@
 import requests
 import random
 import os
+import sys
 шаблон = '<HTML><HEAD><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=---"></HEAD><BODY></BODY></HTML>'
 month = 1
 day = 1
@@ -13,7 +14,7 @@ if mode not in ["h", "ht", "t"]:
     print("[Error] Unknown arg [MODE]")
     print("[PressKey] Press any key to exit")
     input()
-    exit()
+    sys.exit()
 print("[Parser] Starting Parser...")
 if mode in ["h", "ht"] and not os.path.isdir("parsed"):
     os.mkdir("parsed")
