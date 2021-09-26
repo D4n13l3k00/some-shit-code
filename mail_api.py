@@ -1,7 +1,7 @@
 #############################################################
 #         Simple mobile API wrapper for Mail.Cloud          #
 #                     Coded by D4n13l3k00                   #
-#       github.com/Daniel3k00         t.me/d4n13l3k00       #
+#       github.com/D4n13l3k00         t.me/D4n13l3k00       #
 # For download file,  you must use useragent from this code #
 #############################################################
 from requests import post
@@ -31,19 +31,21 @@ class MailAPI():
         self.url = re.compile(r"(https://){0,1}(cloud.mail.ru){0,1}(/){0,1}(public/.*)")
     def check_link(self, link: str) -> bool:
         obj = post("https://mublic.cloud.mail.ru/api/m3/list", headers=self.headers, json={"path":link, "limit":1, "offset":0, "direction":"asc", "sort":"name"}).json()
-        return 'objects' in obj or 'name' in obj
+        if 'objects' not in obj and 'name' not in obj: return False
+        return True
     def get_list(self, path:str, limit:int=1000, offset:int=0) -> dict:
         if not self.url.match(path):
             raise ValueError(f"Url/path \"{path}\" is invalid!")
         path = self.url.findall(path)[0][-1]
         obj = post("https://mublic.cloud.mail.ru/api/m3/list", headers=self.headers, json={"path":path, "limit":limit, "offset":offset, "direction":"asc", "sort":"name"}).json()
         if 'objects' not in obj:
-            if 'name' not in obj:
+            if 'name' in obj:
+                file = types.FileObject()
+                file.filename = obj['name']
+                file.url = post("https://mublic.cloud.mail.ru/api/m3/get", headers=self.headers,json={"path":path}).json()['url']
+                return file
+            else:
                 return types.NoFiles()
-            file = types.FileObject()
-            file.filename = obj['name']
-            file.url = post("https://mublic.cloud.mail.ru/api/m3/get", headers=self.headers,json={"path":path}).json()['url']
-            return file
         else:
             fileObjs = types.FilesObjects()
             for i in obj["objects"]:
@@ -67,6 +69,8 @@ class MailAPI():
                         fileObjs.other.append(fileObj)
                 elif i["type"] == "d":
                     fileObjs.dirs.append(i['name'])
+                else:
+                    pass
             inf = types.DirInfo()
             inf.count = obj["files"]
             inf.name = obj["name"]
