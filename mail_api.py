@@ -44,9 +44,7 @@ class MailAPI():
     def check_link(self, link: str) -> bool:
         obj = post("https://mublic.cloud.mail.ru/api/m3/list", headers=self.headers, json={
                    "path": link, "limit": 1, "offset": 0, "direction": "asc", "sort": "name"}).json()
-        if 'objects' not in obj and 'name' not in obj:
-            return False
-        return True
+        return 'objects' in obj or 'name' in obj
 
     def get_list(self, path: str, limit: int = 1000, offset: int = 0) -> dict:
         if not self.url.match(path):
@@ -89,8 +87,6 @@ class MailAPI():
                         fileObjs.other.append(fileObj)
                 elif i["type"] == "d":
                     fileObjs.dirs.append(i['name'])
-                else:
-                    pass
             inf = types.DirInfo()
             inf.count = obj["files"]
             inf.name = obj["name"]
