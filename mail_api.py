@@ -44,8 +44,7 @@ class MailAPI():
                 file.filename = obj['name']
                 file.url = post("https://mublic.cloud.mail.ru/api/m3/get", headers=self.headers,json={"path":path}).json()['url']
                 return file
-            else:
-                return types.NoFiles()
+            return types.NoFiles()
         else:
             fileObjs = types.FilesObjects()
             for i in obj["objects"]:
