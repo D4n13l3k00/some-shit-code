@@ -15,7 +15,7 @@ from pydantic import BaseModel
 class Models:
     class NoFiles(BaseModel):
         pass
-    
+
     class File(BaseModel):
         name: str
         url: str
