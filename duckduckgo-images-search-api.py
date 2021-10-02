@@ -1,7 +1,9 @@
-import requests
-import re
 import json
 import random
+import re
+
+import requests
+
 __url = "https://duckduckgo.com/"
 
 
