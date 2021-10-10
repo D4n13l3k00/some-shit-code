@@ -43,38 +43,34 @@ class MailAPI:
         if not self.url.match(link):
             raise ValueError(f'Url/path \"{link}\" is invalid!')
         path = self.url.findall(link)[0][-1]
-        async with aiohttp.ClientSession() as s:
-            async with s.post("https://mublic.cloud.mail.ru/api/m3/list", headers=self.headers, json={
-                    "path": path, "limit": 1, "offset": 0, "direction": "asc", "sort": "name"}) as response:
-                obj = await response.json()
-                return 'objects' in obj or 'name' in obj
+        async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/list", headers=self.headers, json={
+                "path": path, "limit": 1, "offset": 0, "direction": "asc", "sort": "name"}) as response:
+            obj = await response.json()
+            return 'objects' in obj or 'name' in obj
 
     async def getList(self, link: str, limit: int = 1000, offset: int = 0) -> Union[Models.Files, Models.File, Models.NoFiles]:
         if not self.url.match(link):
             raise ValueError(f'Url/path \"{link}\" is invalid!')
         path = self.url.findall(link)[0][-1]
-        async with aiohttp.ClientSession() as s:
-            async with s.post("https://mublic.cloud.mail.ru/api/m3/list", headers=self.headers, json={
-                    "path": path, "limit": limit, "offset": offset, "direction": "asc", "sort": "name"}) as response:
-                obj = await response.json()
+        async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/list", headers=self.headers, json={
+                "path": path, "limit": limit, "offset": offset, "direction": "asc", "sort": "name"}) as response:
+            obj = await response.json()
 
         if 'objects' not in obj:
             if 'name' in obj:
-                async with aiohttp.ClientSession() as s:
-                    async with s.post("https://mublic.cloud.mail.ru/api/m3/get",
-                                      headers=self.headers, json={"path": path}) as response:
-                        j = (await response.json())
-                        print(obj)
-                        return Models.File(**obj, **j)
+                async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/get",
+                                                                headers=self.headers, json={"path": path}) as response:
+                    j = (await response.json())
+                    print(obj)
+                    return Models.File(**obj, **j)
             return Models.NoFiles()
         result = Models.Files()
         for i in obj["objects"]:
             if i["type"] == "f":
-                async with aiohttp.ClientSession() as s:
-                    async with s.post("https://mublic.cloud.mail.ru/api/m3/get",
-                                      headers=self.headers, json={"path": path+"/"+i["name"]}) as response:
-                        j = (await response.json())
-                        result.files.append(Models.File(**i, **j))
+                async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/get",
+                                                                headers=self.headers, json={"path": path+"/"+i["name"]}) as response:
+                    j = (await response.json())
+                    result.files.append(Models.File(**i, **j))
             elif i["type"] == "d":
                 result.dirs.append(Models.Directory(title=i["name"]))
         result.name = obj['name']
@@ -85,8 +81,7 @@ class MailAPI:
         if not self.url.match(link):
             raise ValueError(f"Url/path \"{link}\" is invalid!")
         path = self.url.findall(link)[0][-1]
-        async with aiohttp.ClientSession() as s:
-            async with s.post("https://mublic.cloud.mail.ru/api/m3/get",
-                              headers=self.headers, json={"path": path}) as response:
-                j = await response.json()
-                return j["url"] if "url" in j else None
+        async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/get",
+                                                        headers=self.headers, json={"path": path}) as response:
+            j = await response.json()
+            return j["url"] if "url" in j else None
