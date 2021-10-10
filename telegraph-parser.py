@@ -1,7 +1,9 @@
-import requests
-import random
 import os
+import random
 import sys
+
+import requests
+
 шаблон = '<HTML><HEAD><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=---"></HEAD><BODY></BODY></HTML>'
 month = 1
 day = 1
@@ -39,9 +41,8 @@ while True:
         if uselogging == "y":
             print("[Parser] Link is valid")
         valid += 1
-    else:
-        if uselogging == "y":
-            print("[Parser] Link is invalid (python syntax be like)")
+    elif uselogging == "y":
+        print("[Parser] Link is invalid (python syntax be like)")
     day += 1
     if day == 32:
         day = 1
