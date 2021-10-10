@@ -59,7 +59,7 @@ class MailAPI:
         if 'objects' not in obj:
             if 'name' in obj:
                 async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/get",
-                                  headers=self.headers, json={"path": path}) as response:
+                                                                headers=self.headers, json={"path": path}) as response:
                     j = (await response.json())
                     print(obj)
                     return Models.File(**obj, **j)
@@ -68,7 +68,7 @@ class MailAPI:
         for i in obj["objects"]:
             if i["type"] == "f":
                 async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/get",
-                                  headers=self.headers, json={"path": path+"/"+i["name"]}) as response:
+                                                                headers=self.headers, json={"path": path+"/"+i["name"]}) as response:
                     j = (await response.json())
                     result.files.append(Models.File(**i, **j))
             elif i["type"] == "d":
@@ -82,6 +82,6 @@ class MailAPI:
             raise ValueError(f"Url/path \"{link}\" is invalid!")
         path = self.url.findall(link)[0][-1]
         async with aiohttp.ClientSession() as s, s.post("https://mublic.cloud.mail.ru/api/m3/get",
-                          headers=self.headers, json={"path": path}) as response:
+                                                        headers=self.headers, json={"path": path}) as response:
             j = await response.json()
             return j["url"] if "url" in j else None
