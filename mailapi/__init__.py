@@ -36,7 +36,8 @@ class MailAPI:
         self, userAgent: str = "Android 3.16.0.12052 10:BASIC:ru.mail.cloud::null"
     ):
         self.headers = {"user-agent": userAgent}
-        self.url = re.compile(r"(https://){0,1}(cloud.mail.ru){0,1}(/){0,1}(public/.*)")
+        self.url = re.compile(
+            r"(https://){0,1}(cloud.mail.ru){0,1}(/){0,1}(public/.*)")
 
     async def isValidLink(self, link: str) -> bool:
         if not self.url.match(link):

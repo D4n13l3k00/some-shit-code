@@ -11,7 +11,8 @@ lnk = input("Your request > ")
 valid = 0
 alls = 0
 uselogging = input("[Using] Logging? [y|n] > ").lower()
-mode = input("[Choose] Mode -> HtmlLinks/HtmlLinks+txt/txt [h|ht|t] > ").lower()
+mode = input(
+    "[Choose] Mode -> HtmlLinks/HtmlLinks+txt/txt [h|ht|t] > ").lower()
 if mode not in ["h", "ht", "t"]:
     print("[Error] Unknown arg [MODE]")
     print("[PressKey] Press any key to exit")
